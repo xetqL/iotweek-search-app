@@ -27,14 +27,19 @@ function csv_into_dictionnary_deprecated(filename, separator=';', ignoreFirsts=1
 
 }
 
-const readCsvData = (csvFilePath, onFinished) => {
+const readCsvData = (csvFilePath, onFinished, ignoreFirsts=8) => {
     let json = []
-    csv({delimiter: "auto"}).fromFile(csvFilePath)
-    .on('json',(jsonObj)=>{
-        json.push(jsonObj)              
-    })
-    .on('done',(error)=>{
-        onFinished(json)
+    fs.readFile(csvFilePath, (err, content) => {
+        let lines = content.toString().split('\n')
+        lines.splice(0, ignoreFirsts)
+        let filteredContent = lines.join('\n')
+        csv({delimiter: "auto"}).fromString(filteredContent)
+        .on('json',(jsonObj)=>{
+            json.push(jsonObj)              
+        })
+        .on('done',(error)=>{
+            onFinished(json)
+        })
     })
 }
 
