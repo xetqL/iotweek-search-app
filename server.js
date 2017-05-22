@@ -37,7 +37,12 @@ app.get('/find',function (req, res) {
   		let ok = true
   		for(let i=0; i<keys.length;i++){
   			let key = keys[i]
-  			if(!(entry[key] && entry[key].toString().toLowerCase().includes(req.query[key].toString().toLowerCase()))){
+                        if(key == 'GalaDinner') {
+                            if (!(entry["Articles"].toString().toLowerCase().includes("additional gala dinner") || entry["Detail"].toString().toLowerCase().includes("additional gala dinner"))){
+                                ok = false
+                                break
+                            }
+                        } else if(!(entry[key] && entry[key].toString().toLowerCase().includes(req.query[key].toString().toLowerCase()))){
   				ok = false
   				break
   			}

@@ -33,24 +33,26 @@ Query keys (case sensitive):
   'Code Promo',
   'Detail',
   'Gala (Code)',
-  'Gala (autres)'
+  'Gala (autres)',
+  'GalaDinner'
 </pre></div>
 <p>Example: Pays=United&amp;Entreprise=Rambus</p>
 
 
-<input type="text" id="search-field"></input><div class="button" id="search-button">search</div><div class="button"><a href="/export" download="IoTWeekDb.zip" id="download-link">printer compatible zip</a></div>
+<input type="text" id="search-field"></input><div class="button" id="dinner-button">Gala Dinner</div> <div class="button" id="search-button">search</div><div class="button"><a href="/export" download="IoTWeekDb.zip" id="download-link">printer compatible zip</a></div>
 <div class="container"><div id="loading">&#8635;</div>
 <span id="state-box">State: <span id="state">waiting...</span><br/>
 Records: <span id="records">0</span></span><pre class="prettyprint" id="display"></pre></div>
 </div>
 <script>
 	var button = document.querySelector("#search-button")
+        //var buttonDinner = document.querySelector("#dinner-button")
 	var field = document.querySelector("#search-field")
 	var display = document.querySelector("#display")
 	var state = document.querySelector("#state")
 	var records = document.querySelector("#records")
 	button.onclick = function(evt){
-		state.innerHTML = "loading..."
+ 		state.innerHTML = "loading..."
 		restclient.get("http://"+window.location.host+"/find?"+field.value).then(function(code,result){
 			if(code===200){
 				display.innerHTML = JSON.stringify(result, null, 4)
@@ -64,6 +66,22 @@ Records: <span id="records">0</span></span><pre class="prettyprint" id="display"
 			}
 		})
 	}
+        /*button.onclick = function(e) {
+ 		state.innerHTML = "loading..."
+		restclient.get("http://"+window.location.host+"/find?GalaDinner=true").then(function(code,result){
+			if(code===200){
+				display.innerHTML = JSON.stringify(result, null, 4)
+				records.innerHTML = result.length
+				state.innerHTML = "done."
+			}
+			else{
+				state.innerHTML = "<span style='color:red'>error: "+(code=== "error" ? "server not reachable" : code)+"<span>"
+				display.innerHTML = "Wooops, can't complete the request &#128533;"
+				records.innerHTML = "N/A"
+			}
+		})
+        
+        }*/
 	field.onkeyup = window.onkeyup = function(e){
 		if(e.keyCode === 13)
 			button.click()
