@@ -39,16 +39,24 @@ Query keys (case sensitive):
 
 
 <input type="text" id="search-field"></input><div class="button" id="search-button">search</div><div class="button"><a href="/export" download="iotweek-printable-db.zip" id="download-link">Printer compatible file</a></div>
-<div class="container"><div id="loading">&#8635;</div><pre class="prettyprint" id="display"></pre></div>
+<div class="container"><div id="loading">&#8635;</div>
+<span id="state-box">State: <span id="state">waiting...</span><br/>
+Records: <span id="records">0</span></span><pre class="prettyprint" id="display"></pre></div>
 </div>
 <script>
 	var button = document.querySelector("#search-button")
 	var field = document.querySelector("#search-field")
 	var display = document.querySelector("#display")
+	var state = document.querySelector("#state")
+	var records = document.querySelector("#records")
 	button.onclick = function(evt){
+		state.innerHTML = "loading..."
 		restclient.get("http://"+window.location.host+"/find?"+field.value).then(function(code,result){
-			if(code===200)
+			if(code===200){
 				display.innerHTML = JSON.stringify(result, null, 4)
+				records.innerHTML = result.length
+				state.innerHTML = "done."
+			}
 			else
 				display.innerHTML = "Error with the parameters"
 		})
