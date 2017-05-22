@@ -38,7 +38,7 @@ Query keys (case sensitive):
 <p>Example: Pays=United&amp;Entreprise=Rambus</p>
 
 
-<input type="text" id="search-field"></input><div class="button" id="search-button">search</div><div class="button"><a href="/export" download="iotweek-printable-db.zip" id="download-link">Printer compatible file</a></div>
+<input type="text" id="search-field"></input><div class="button" id="search-button">search</div><div class="button"><a href="/export" download="IoTWeekDb.zip" id="download-link">Printer compatible file</a></div>
 <div class="container"><div id="loading">&#8635;</div>
 <span id="state-box">State: <span id="state">waiting...</span><br/>
 Records: <span id="records">0</span></span><pre class="prettyprint" id="display"></pre></div>
@@ -57,14 +57,18 @@ Records: <span id="records">0</span></span><pre class="prettyprint" id="display"
 				records.innerHTML = result.length
 				state.innerHTML = "done."
 			}
-			else
-				display.innerHTML = "Error with the parameters"
+			else{
+				state.innerHTML = "<span style='color:red'>error: "+(code=== "error" ? "server not reachable" : code)+"<span>"
+				display.innerHTML = "Wooops, can't complete the request &#128533;"
+				records.innerHTML = "N/A"
+			}
 		})
 	}
-	field.onkeyup = function(e){
+	field.onkeyup = window.onkeyup = function(e){
 		if(e.keyCode === 13)
 			button.click()
 	}
+	field.focus()
 
 </script>
 </body>
