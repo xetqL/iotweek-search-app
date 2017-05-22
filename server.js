@@ -1,6 +1,7 @@
 const express = require('express')
 require('./csvsearch.js').init('test.csv',100000)//.verbose()
 const {csvData} = require('./csvsearch.js')
+const EasyZip = require("easy-zip").EasyZip
 
 
 
@@ -38,7 +39,7 @@ app.get('/find',function (req, res) {
   			let key = keys[i]
   			if(!(entry[key] && entry[key].toString().toLowerCase().includes(req.query[key].toString().toLowerCase()))){
   				ok = false
-  				break;
+  				break
   			}
   		}
   		return ok
@@ -51,13 +52,17 @@ app.get('/find',function (req, res) {
 app.get('/export', function(req, res){
 	let result = "participantFirstName;participantLastName;participantCompany\n"
 
-	let data = csvData()
+	let data = csvData()	
 	data.forEach(entry => {
 		let str = entry["Prénom"]+";"+entry["Nom"]+";"+entry["Entreprise"]+"\n"
 		result = result+str
 	})
-	res.setHeader("Content-Type", "text/csv")
-  	res.end(result)
+	let zip = new EasyZip()
+	zip.file("all.csv", result)
+	//To add more files:
+	//zip.file(name,content)
+    res.setHeader("Content-Type", "application/zip")
+    zip.writeToResponse(res,'IoTWeekDb.zip')
 })
 
 const server = app.listen(6969, () => {
