@@ -1,5 +1,5 @@
 const express = require('express')
-require('./csvsearch.js').init('test.csv',100000)//.verbose()
+require('./csvsearch.js').init({iotweek: 'test.csv', guests: undefined, giots: undefined},100000)//.verbose()
 const {csvData} = require('./csvsearch.js')
 const EasyZip = require("easy-zip").EasyZip
 const {classifyRegistration,categoryToCardpressoReadable} = require('./articlesparsing.js')
@@ -30,7 +30,7 @@ app.use('/', express.static(__dirname + '/public'))
 //Search api
 app.get('/find',function (req, res) {
   const keys = Object.keys(req.query)
-  let data = csvData()
+  let data = csvData("iotweek")
   let response = data
   if(keys.length > 0)
   	response = data.filter( entry => {
@@ -52,23 +52,20 @@ app.get('/find',function (req, res) {
 app.get('/export', function(req, res){
 	let result = "participantFirstName;participantLastName;participantCompany\n"
 
-	let data = csvData()	
+	let data = csvData("iotweek")	
 	let participants = {}
 
-        data.forEach(entry => {
-                let registrationsType = classifyRegistration(entry)
+	data.forEach(entry => {
+    	let registrationsType = classifyRegistration(entry)
 		let str = entry["Prénom"].replace(';', ',')+";"+entry["Nom"].replace(';', ',')+";"+entry["Entreprise"].replace(';', ',') +"\n"
-                registrationsType.forEach( regType => {
-                    participants[regType] = (regType in participants) ? participants[regType]+str : result + str
-                })
+        registrationsType.forEach( regType => {
+        	participants[regType] = (regType in participants) ? participants[regType]+str : result + str
+    	})
 	})
 	let zip = new EasyZip()
-        Object.keys(participants).forEach( regType => {
-            zip.file(categoryToCardpressoReadable(regType) + ".csv", participants[regType])
-        })
-	//zip.file("all.csv", )
-	//To add more files:
-	//zip.file(name,content)
+	Object.keys(participants).forEach( regType => {
+    	zip.file(categoryToCardpressoReadable(regType) + ".csv", participants[regType])
+	})
     res.setHeader("Content-Type", "application/zip")
     zip.writeToResponse(res,'IoTWeekDb.zip')
 })

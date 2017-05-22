@@ -1,32 +1,6 @@
 const fs = require('fs')
 const csv = require('csvtojson')
 
-//Deprecated
-function csv_into_dictionnary_deprecated(filename, separator=';', ignoreFirsts=1){
-    let lines    = fs.readFileSync(filename, 'utf8').toString().split('\n');
-    let elements = lines.filter(line => { return line != ''}).map(line => { return line.split(separator) });
-    elements.splice(0, ignoreFirsts)
-    let header  = elements.shift();
-    jsonArray = [];
-    console.log(header)
-    var participantId = 0;
-    elements = elements.map( p => {
-        var zipped = header.map(function (e, i) {
-            return [e, p[i]];
-        }); 
-        return zipped
-    })
-    elements.forEach(participantData => {
-        jsonArray[participantId] = {};
-        participantData.forEach( headerAndData => {
-            jsonArray[participantId][headerAndData[0]] = headerAndData[1]
-        })
-        participantId++;
-    })
-    return jsonArray
-
-}
-
 const readCsvData = (csvFilePath, onFinished, ignoreFirsts=8) => {
     let json = []
     fs.readFile(csvFilePath, (err, content) => {
@@ -48,15 +22,20 @@ const readCsvData = (csvFilePath, onFinished, ignoreFirsts=8) => {
 let csvData = {}
 let initialized = false
 let verbose = false
-exports.init = (location,delay) => {
+//Keys : guests, iotweek, giots
+exports.init = (locations,delay) => {
     if(initialized)
         return
     initialized = true
     const f = () => {
-        readCsvData(location, (result) => {
-            csvData = result
-            if(verbose)
-                console.log("Pricing data reloaded from disk (every "+delay+" ms")
+        Object.keys(locations).forEach(key => {
+            if(!locations[key])
+                return
+            readCsvData(locations[key], (result) => {
+                csvData[key] = result
+                if(verbose)
+                    console.log("Pricing data reloaded from disk (every "+delay+" ms")
+            })
         })
         setTimeout(f, delay)
     }
@@ -64,9 +43,9 @@ exports.init = (location,delay) => {
     return {verbose: () => {verbose = true}}
 }
 
-exports.csvData = () => {
+exports.csvData = (key) => {
     if(initialized)
-        return csvData
+        return csvData[key]
     else
         throw {name: "NotInitialized",message: "Csv data reader was never initialized, use init(path,delay) before.", toString : function() {return "ERROR: "+this.name+" : "+this.message}}
 }
