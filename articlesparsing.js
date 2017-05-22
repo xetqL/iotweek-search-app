@@ -24,7 +24,7 @@ module.exports = {
         }
         
         function checkCategory(participantJsonData, checkOn){
-            let articles = participantJsonData[checkOn]
+            let articles = participantJsonData[checkOn].replace('  ', ' ')
             let participantCategories = []
             if (articles.toLowerCase().includes(full_reg.toLowerCase())) return [10] 
             if (articles.toLowerCase().includes(red_reg.toLowerCase()))  return [20]
