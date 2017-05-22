@@ -57,7 +57,7 @@ app.get('/export', function(req, res){
 
         data.forEach(entry => {
                 let registrationsType = classifyRegistration(entry)
-		let str = entry["Prénom"]+";"+entry["Nom"]+";"+entry["Entreprise"]+"\n"
+		let str = entry["Prénom"].replace(';', ',')+";"+entry["Nom"].replace(';', ',')+";"+entry["Entreprise"].replace(';', ',') +"\n"
                 registrationsType.forEach( regType => {
                     participants[regType] = (regType in participants) ? participants[regType]+str : result + str
                 })
