@@ -1,0 +1,22 @@
+#search-field{
+	width:250px
+}
+p{
+	color:grey;
+}
+
+#main{
+	position: absolute;
+    top:0;
+    width:600px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+#display{
+	overflow: auto
+}
+.container{
+
+}

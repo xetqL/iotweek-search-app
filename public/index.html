@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Database search</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+<script src="restclient.js"></script>
+</head>
+<body onload="PR.prettyPrint()">
+<div id="main">
+<h1>Let's search yo</h1>
+<div class="container"><pre class="prettyprint">
+Query keys (case sensitive):
+  'Montants',
+  'id',
+  'Civilité',
+  'Prénom',
+  'Nom',
+  'Entreprise',
+  'Adresse',
+  'NPA',
+  'Localité',
+  'Province',
+  'Pays',
+  'Téléphone',
+  'Mobile',
+  'Email',
+  'Catégorie',
+  'Newsletter',
+  'Association',
+  'Remarque',
+  'Articles',
+  'Code Promo',
+  'Detail',
+  'Gala (Code)',
+  'Gala (autres)'
+</pre></div>
+<p>Example: Pays=United&amp;Entreprise=Rambus</p>
+
+
+<input type="text" id="search-field"></input><button id="search-button">search</button>
+<div class="container"><pre class="prettyprint" id="display"></pre></div>
+</div>
+<script>
+	//prettyPrint()
+	var button = document.querySelector("#search-button")
+	var field = document.querySelector("#search-field")
+	var display = document.querySelector("#display")
+	button.onclick = function(evt){
+		restclient.get("http://"+window.location.host+"/find?"+field.value).then(function(code,result){
+			if(code===200)
+				display.innerHTML = JSON.stringify(result, null, 4)
+			else
+				display.innerHTML = "Error with the parameters"
+		})
+	}
+	field.onkeyup = function(e){
+		if(e.keyCode === 13)
+			button.click()
+	}
+
+</script>
+</body>
+</html>
