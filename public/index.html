@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Database search</title>
+<title>IoT Week Database</title>
 <link rel="stylesheet" type="text/css" href="style.css">
 <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 <script src="restclient.js"></script>
 </head>
 <body onload="PR.prettyPrint()">
 <div id="main">
-<h1>Let's search yo</h1>
+<h1>IoT Week Database</h1>
 <div class="container"><pre class="prettyprint">
 Query keys (case sensitive):
   'Montants',
@@ -38,11 +38,10 @@ Query keys (case sensitive):
 <p>Example: Pays=United&amp;Entreprise=Rambus</p>
 
 
-<input type="text" id="search-field"></input><button id="search-button">search</button>
-<div class="container"><pre class="prettyprint" id="display"></pre></div>
+<input type="text" id="search-field"></input><div class="button" id="search-button">search</div><div class="button"><a href="/export" download="iotweek-printable-db.csv" id="download-link">Printer compatible file</a></div>
+<div class="container"><div id="loading">&#8635;</div><pre class="prettyprint" id="display"></pre></div>
 </div>
 <script>
-	//prettyPrint()
 	var button = document.querySelector("#search-button")
 	var field = document.querySelector("#search-field")
 	var display = document.querySelector("#display")

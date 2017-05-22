@@ -1,10 +1,19 @@
 #search-field{
-	width:250px
+	width:250px;
+	padding:3px;
 }
 p{
 	color:grey;
 }
 
+#loading{
+	animation: spin infinite 1s linear;
+	width:20px;
+	height:20px;
+	font-style: bold;
+	font-size:200px;
+	display:none;
+}
 #main{
 	position: absolute;
     top:0;
@@ -17,6 +26,26 @@ p{
 #display{
 	overflow: auto
 }
-.container{
+.button{
+	margin:3px;
+	padding: 3px;
+	display: inline-block;
+	border: 1px solid #a4a4af;
+	cursor:pointer;
+	color:black;
+	border-radius: 5px;
+}
+.button:hover{
+	background-color: #a4a4af;
+	color:white;
+}
 
+#download-link{
+	color:inherit;
+  	text-decoration: none; /* no underline */
+}
+
+@keyframes spin {
+  from{transform: rotate(0deg);}
+  to{transform: rotate(360deg);}
 }
