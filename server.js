@@ -2,7 +2,7 @@ const express = require('express')
 require('./csvsearch.js').init('test.csv',100000)//.verbose()
 const {csvData} = require('./csvsearch.js')
 const EasyZip = require("easy-zip").EasyZip
-
+const {classifyRegistration,categoryToCardpressoReadable} = require('./articlesparsing.js')
 
 
 function respondJSON(res,data){
@@ -53,12 +53,20 @@ app.get('/export', function(req, res){
 	let result = "participantFirstName;participantLastName;participantCompany\n"
 
 	let data = csvData()	
-	data.forEach(entry => {
+	let participants = {}
+
+        data.forEach(entry => {
+                let registrationsType = classifyRegistration(entry)
 		let str = entry["Prénom"]+";"+entry["Nom"]+";"+entry["Entreprise"]+"\n"
-		result = result+str
+                registrationsType.forEach( regType => {
+                    participants[regType] = (regType in participants) ? participants[regType]+str : result + str
+                })
 	})
 	let zip = new EasyZip()
-	zip.file("all.csv", result)
+        Object.keys(participants).forEach( regType => {
+            zip.file(categoryToCardpressoReadable(regType) + ".csv", participants[regType])
+        })
+	//zip.file("all.csv", )
 	//To add more files:
 	//zip.file(name,content)
     res.setHeader("Content-Type", "application/zip")
