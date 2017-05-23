@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IoT Week Database</title>
 <link rel="stylesheet" type="text/css" href="style.css">
 <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
@@ -9,7 +10,7 @@
 <body onload="PR.prettyPrint()">
 <div id="main">
 <h1>IoT Week Database</h1>
-<div class="container"><pre class="prettyprint">
+<div class="container"><div id="query-keys-bar">[&#8690;] Show query keys</div><pre class="prettyprint" id="keys">
 Query keys (case sensitive):
   'Montants',
   'id',
@@ -39,7 +40,7 @@ Query keys (case sensitive):
 <p>Example: Pays=United&amp;Entreprise=Rambus</p>
 
 
-<input type="text" id="search-field"></input><div class="button" id="dinner-button">Gala Dinner</div> <div class="button" id="search-button">search</div><div class="button"><a href="/export" download="IoTWeekDb.zip" id="download-link">printer compatible zip</a></div>
+<input type="text" id="search-field"></input><!--<div class="button" id="dinner-button">Gala Dinner</div> --><div class="button" id="search-button">search</div><div class="button"><a href="/export" download="IoTWeekDb.zip" id="download-link">printer compatible zip</a></div>
 <div class="container"><div id="loading">&#8635;</div>
 <span id="state-box">State: <span id="state">waiting...</span><br/>
 Records: <span id="records">0</span></span><pre class="prettyprint" id="display"></pre></div>
@@ -51,6 +52,7 @@ Records: <span id="records">0</span></span><pre class="prettyprint" id="display"
 	var display = document.querySelector("#display")
 	var state = document.querySelector("#state")
 	var records = document.querySelector("#records")
+	var querybar = document.querySelector("#query-keys-bar")
 	button.onclick = function(evt){
  		state.innerHTML = "loading..."
 		restclient.get("http://"+window.location.host+"/find?"+field.value).then(function(code,result){
@@ -65,6 +67,16 @@ Records: <span id="records">0</span></span><pre class="prettyprint" id="display"
 				records.innerHTML = "N/A"
 			}
 		})
+	}
+	querybar.onclick = function(e){
+		var keys = document.querySelector("#keys")
+		if(keys.style.display === ""){
+			keys.style.display = "block"
+			querybar.innerHTML = "[&#8689;] Hide query keys"
+		}else{
+			querybar.innerHTML = "[&#8690;] Show query keys"
+			keys.style.display = ""
+		}
 	}
         /*button.onclick = function(e) {
  		state.innerHTML = "loading..."
