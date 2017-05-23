@@ -4,7 +4,7 @@ const csv = require('csvtojson')
 const readCsvData = (csvFilePath, onFinished, ignoreFirsts=8) => {
     let json = []
     fs.readFile(csvFilePath, (err, content) => {
-        let lines = content.toString().split('\n')
+        let lines = content.toString().split(/\r|\n/)
         lines.splice(0, ignoreFirsts)
         let filteredContent = lines.join('\n')
         csv({delimiter: "auto"}).fromString(filteredContent)
@@ -34,7 +34,7 @@ exports.init = (locations,delay) => {
             readCsvData(locations[key], (result) => {
                 csvData[key] = result
                 if(verbose)
-                    console.log("Pricing data reloaded from disk (every "+delay+" ms")
+                    console.log("Registration data reloaded from disk (every "+delay+" ms")
             })
         })
         setTimeout(f, delay)
