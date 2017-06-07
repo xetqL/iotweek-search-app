@@ -1,5 +1,5 @@
 const express = require('express')
-require('./csvsearch.js').init({iotweek: 'test.csv', guests: undefined, giots: undefined},100000)//.verbose()
+require('./csvsearch.js').init({iotweek: 'test.csv', guests: undefined, giots: undefined, printed:'listbadges.csv'},100000)//.verbose()
 const {csvData} = require('./csvsearch.js')
 const EasyZip = require("easy-zip").EasyZip
 const {classifyRegistration,categoryToCardpressoReadable} = require('./articlesparsing.js')
@@ -30,20 +30,33 @@ app.use('/', express.static(__dirname + '/public'))
 //Search api
 app.get('/find',function (req, res) {
   const keys = Object.keys(req.query)
-  let data = csvData("iotweek")
+  let data = keys.includes("printed") ? csvData("printed") :csvData("iotweek")
   let response = data
   if(keys.length > 0)
   	response = data.filter( entry => {
   		let ok = true
   		for(let i=0; i<keys.length;i++){
   			let key = keys[i]
-                        if(key == 'GalaDinner') {
-                            if (!(entry["Articles"].toString().toLowerCase().includes("additional gala dinner") || entry["Detail"].toString().toLowerCase().includes("additional gala dinner"))){
-                                ok = false
-                                break
-                            }
-                        } else if(!(entry[key] && entry[key].toString().toLowerCase().includes(req.query[key].toString().toLowerCase()))){
-  				ok = false
+        if(key == "printed")
+        {
+          if(req.query.printed){
+            if(entry.Company.toString().toLowerCase().includes(req.query.printed.toLowerCase) || entry.firstName.toString().toLowerCase().includes(req.query.printed.toLowerCase()) || entry.lastName.toString().toLowerCase().includes(req.query.printed.toLowerCase()))
+            {
+              ok = true
+            }else{
+              ok = false
+            }
+            break
+          }
+          continue
+        }
+        if(key == 'GalaDinner') {
+          if (!(entry["Articles"].toString().toLowerCase().includes("additional gala dinner") || entry["Détail"].toString().toLowerCase().includes("additional gala dinner"))){
+            ok = false
+            break
+          }
+        } else if(!(entry[key] && entry[key].toString().toLowerCase().includes(req.query[key].toString().toLowerCase()))){
+          ok = false
   				break
   			}
   		}
@@ -75,7 +88,7 @@ app.get('/export', function(req, res){
     zip.writeToResponse(res,'IoTWeekDb.zip')
 })
 
-const server = app.listen(6969, () => {
+const server = app.listen(6969, 'localhost' ,() => {
   let host = server.address().address
   let port = server.address().port
   console.log("Search server running at http://%s:%s", host, port)

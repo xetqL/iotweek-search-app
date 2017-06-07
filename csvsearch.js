@@ -35,7 +35,7 @@ exports.init = (locations,delay) => {
                 csvData[key] = result
                 if(verbose)
                     console.log("Registration data reloaded from disk (every "+delay+" ms")
-            })
+            },(key==="iotweek" ? 8 : 0))
         })
         setTimeout(f, delay)
     }
@@ -50,6 +50,6 @@ exports.csvData = (key) => {
         throw {name: "NotInitialized",message: "Csv data reader was never initialized, use init(path,delay) before.", toString : function() {return "ERROR: "+this.name+" : "+this.message}}
 }
 
-
+exports.readCsvData = readCsvData
 
 

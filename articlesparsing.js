@@ -24,6 +24,7 @@ module.exports = {
         }
         
         function checkCategory(participantJsonData, checkOn){
+            //console.log(participantJsonData,checkOn)
             let articles = participantJsonData[checkOn].replace('  ', ' ')
             let participantCategories = []
             if (articles.toLowerCase().includes(full_reg.toLowerCase())) return [10] 
@@ -40,7 +41,7 @@ module.exports = {
         let participantCategories = []  
         participantCategories = participantCategories.concat(checkCategory(participantJsonData, "Articles"))
         participantCategories = participantCategories.concat(checkCode(participantJsonData))
-        participantCategories = participantCategories.concat(checkCategory(participantJsonData, "Detail"))
+        participantCategories = participantCategories.concat(checkCategory(participantJsonData, "Détail"))
         participantCategories = Array.from(new Set(participantCategories))
         participantCategories = participantCategories.length == 0 ? [0] : participantCategories
         return participantCategories
